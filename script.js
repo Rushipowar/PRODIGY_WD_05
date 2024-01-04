@@ -1,41 +1,38 @@
-const inputBox = document.querySelector('.search-input');
-const searchBtn = document.getElementById('searchBtn');
+const get_input = document.querySelector('.search-input');
+const weather_body = document.querySelector('.weather-container');
 const weather_img = document.querySelector('.weather-img');
+const searchBtn = document.getElementById('searchBtn');
 const temperature = document.querySelector('.temperature');
-const description = document.querySelector('.weather-title');
 const humidity = document.getElementById('humidity');
-const wind_speed = document.getElementById('wind-speed');
-
-const location_not_found = document.querySelector('.not-found');
-
-const weather_body = document.querySelector('.weather-body');
+const speed = document.getElementById('wind-speed');
+const title = document.querySelector('.weather-title');
+const not_found = document.querySelector('.not-found');
 
 
-async function checkWeather(city){
+
+async function WeatherChecker(city){
     const api_key = "c5dea024b5f181f4f8c8c2bad9ab2ae7";
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${api_key}`;
 
-    const weather_data = await fetch(`${url}`).then(response => response.json());
+    const get_output = await fetch(`${url}`).then(response => response.json());
 
 
-    if(weather_data.cod === `404`){
-        location_not_found.style.display = "flex";
+    if(get_output.cod === `404`){
+        not_found.style.display = "flex";
         weather_body.style.display = "none";
-        console.log("error");
         return;
     }
 
-    console.log("run");
-    location_not_found.style.display = "none";
+    not_found.style.display = "none";
     weather_body.style.display = "flex";
-    temperature.innerHTML = `${Math.round(weather_data.main.temp - 273.15)}°C`;
-    description.innerHTML = `${weather_data.weather[0].description}`;
+    temperature.innerHTML = `${Math.round(get_output.main.temp - 273.15)}°C`;
+    title.innerHTML = `${get_output.weather[0].title}`;
 
-    humidity.innerHTML = `${weather_data.main.humidity}%`;
-    wind_speed.innerHTML = `${weather_data.wind.speed}Km/H`;
+    humidity.innerHTML = `${get_output.main.humidity}%`;
+    speed.innerHTML = `${get_output.wind.speed}Km/H`;
 
 
-    switch(weather_data.weather[0].main){
+    switch(get_output.weather[0].main){
         case 'Clouds':
             weather_img.src = "/images/cloud.png";
             break;
@@ -54,10 +51,9 @@ async function checkWeather(city){
 
     }
 
-    console.log(weather_data);
 }
 
 
 searchBtn.addEventListener('click', ()=>{
-    checkWeather(inputBox.value);
+    WeatherChecker(get_input.value);
 });
